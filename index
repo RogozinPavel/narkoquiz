@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина: Правда о наркотиках</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        
+        :root {
+            --primary: #6a1b9a;
+            --secondary: #ff5722;
+            --accent: #00bcd4;
+            --light: #f5f5f5;
+            --dark: #212121;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+            background-image: url('https://images.unsplash.com/photo-1518655048521-f130df041f66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.93);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .quiz-container {
+            margin-top: 20px;
+        }
+        
+        .question {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .question:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .question-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 15px 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            border: 3px solid white;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .option:hover {
+            background-color: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .option input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 30px auto;
+            box-shadow: 0 4px 10px rgba(106, 27, 154, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 87, 34, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .good-result {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+            border: 2px solid #2ecc71;
+        }
+        
+        .medium-result {
+            background-color: rgba(241, 196, 15, 0.2);
+            color: #f39c12;
+            border: 2px solid #f1c40f;
+        }
+        
+        .bad-result {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
+            border: 2px solid #e74c3c;
+        }
+        
+        .explanation {
+            font-style: italic;
+            color: #666;
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .question-counter {
+            text-align: right;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .question {
+                padding: 15px;
+            }
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* Задержка для анимации вопросов */
+        .question:nth-child(1) { animation-delay: 0.1s; }
+        .question:nth-child(2) { animation-delay: 0.2s; }
+        .question:nth-child(3) { animation-delay: 0.3s; }
+        /* ... и так далее для всех вопросов */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Правда о наркотиках</h1>
+            <p class="subtitle">Проверь свои знания и защити свое будущее</p>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+        
+        <div class="quiz-container">
+            <div class="question" id="q1">
+                <div class="question-counter">Вопрос 1 из 15</div>
+                <h3>Какой орган больше всего страдает от употребления кокаина?</h3>
+                <img src="https://images.unsplash.com/photo-1574680178050-55c6ee017cca?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Сердце человека" class="question-image">
+                <div class="options">
+                    <label class="option"><input type="radio" name="q1" value="a"> Печень</label>
+                    <label class="option"><input type="radio" name="q1" value="b"> Сердце</label>
+                    <label class="option"><input type="radio" name="q1" value="c"> Почки</label>
+                    <label class="option"><input type="radio" name="q1" value="d"> Легкие</label>
+                </div>
+                <div class="explanation">Правильный ответ: <strong>Сердце</strong>. Кокаин вызывает спазм сосудов и резкое повышение артериального давления, что может привести к инфаркту даже у молодых людей.</div>
+            </div>
+            
+            <!-- Остальные вопросы (я покажу 2 для примера, вы можете добавить остальные аналогично) -->
+            
+            <div class="question" id="q2">
+                <div class="question-counter">Вопрос 2 из 15</div>
+                <h3>Какой процент людей, попробовавших героин, становятся зависимыми?</h3>
+                <img src="https://images.unsplash.com/photo-1581093450021-4a7360e9a6a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Статистика" class="question-image">
+                <div class="options">
+                    <label class="option"><input type="radio" name="q2" value="a"> Около 10%</label>
+                    <label class="option"><input type="radio" name="q2" value="b"> Около 25%</label>
+                    <label class="option"><input type="radio" name="q2" value="c"> Около 50%</label>
+                    <label class="option"><input type="radio" name="q2" value="d"> Более 80%</label>
+                </div>
+                <div class="explanation">Правильный ответ: <strong>Около 25%</strong>. Примерно четверть людей, попробовавших героин, становятся зависимыми.</div>
+            </div>
+            
+            <div class="question" id="q3">
+                <div class="question-counter">Вопрос 3 из 15</div>
+                <h3>Какой из этих наркотиков является синтетическим?</h3>
+                <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Химическая лаборатория" class="question-image">
+                <div class="options">
+                    <label class="option"><input type="radio" name="q3" value="a"> Героин</label>
+                    <label class="option"><input type="radio" name="q3" value="b"> Кокаин</label>
+                    <label class="option"><input type="radio" name="q3" value="c"> Мефедрон</label>
+                    <label class="option"><input type="radio" name="q3" value="d"> Марихуана</label>
+                </div>
+                <div class="explanation">Правильный ответ: <strong>Мефедрон</strong>. Это синтетический наркотик, созданный в лаборатории, в отличие от других перечисленных веществ, которые имеют природное происхождение.</div>
+            </div>
+            
+            <!-- Здесь должны быть вопросы с 4 по 15 -->
+            
+            <button class="btn" onclick="checkAnswers()">Проверить результаты</button>
+            
+            <div class="result" id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Объект с правильными ответами
+        const correctAnswers = {
+            q1: "b",
+            q2: "b",
+            q3: "c",
+            // Добавьте остальные правильные ответы
+        };
+        
+        // Функция для проверки ответов
+        function checkAnswers() {
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            
+            // Проверяем каждый вопрос
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionId = "q" + i;
+                const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                const questionElement = document.getElementById(questionId);
+                const explanationElement = questionElement.querySelector('.explanation');
+                
+                if (selectedOption) {
+                    if (selectedOption.value === correctAnswers[questionId]) {
+                        score++;
+                        questionElement.classList.add('correct');
+                        questionElement.classList.remove('incorrect');
+                    } else {
+                        questionElement.classList.add('incorrect');
+                        questionElement.classList.remove('correct');
+                    }
+                    explanationElement.style.display = 'block';
+                }
+            }
+            
+            // Расчет результата
+            const percentage = Math.round((score / totalQuestions) * 100);
+            const resultElement = document.getElementById('result');
+            
+            // Формируем сообщение в зависимости от результата
+            let message = `Вы ответили правильно на ${score} из ${totalQuestions} вопросов. `;
+            
+            if (percentage >= 80) {
+                message += "Отличный результат! Вы хорошо осведомлены об опасности наркотиков.";
+                resultElement.className = "result good-result";
+            } else if (percentage >= 50) {
+                message += "Неплохо, но есть над чем работать. Узнайте больше о вреде наркотиков.";
+                resultElement.className = "result medium-result";
+            } else {
+                message += "Вам стоит больше узнать о проблеме наркомании и её опасностях.";
+                resultElement.className = "result bad-result";
+            }
+            
+            resultElement.textContent = message;
+            resultElement.style.display = 'block';
+            
+            // Прокрутка к результату
+            resultElement.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Обновление прогресс-бара
+        function updateProgressBar() {
+            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            const progress = (answered / totalQuestions) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        // Слушаем изменения в ответах
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateProgressBar);
+        });
+        
+        // Инициализация прогресс-бара
+        updateProgressBar();
+    </script>
+</body>
+</html>
